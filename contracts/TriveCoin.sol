@@ -84,9 +84,9 @@ contract TokenERC20 {
      * @param _value the amount to send
      */
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= allowance[_from][msg.sender]);     // Check allowance
-        allowance[_from][msg.sender] -= _value;
-        _transfer(_from, _to, _value);
+        require(_value * 10 ** uint256(decimals) <= allowance[_from][msg.sender]);     // Check allowance
+        allowance[_from][msg.sender] -= _value * 10 ** uint256(decimals);
+        _transfer(_from, _to, _value * 10 ** uint256(decimals));
         return true;
     }
 
@@ -100,8 +100,8 @@ contract TokenERC20 {
      */
     function approve(address _spender, uint256 _value) public
         returns (bool success) {
-        allowance[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
+        allowance[msg.sender][_spender] = _value * 10 ** uint256(decimals);
+        emit Approval(msg.sender, _spender, _value * 10 ** uint256(decimals));
         return true;
     }
 

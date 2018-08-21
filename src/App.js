@@ -57,7 +57,7 @@ class App extends Component {
       coin.deployed().then((instance) => {
         const coinInstance = instance
         // create tokens (1mil), name, symbol
-        return coinInstance.TriveTokenERC20(1000000, "Trive", "TRV", {from: accounts[0]})
+        return coinInstance.TriveTokenERC20(1000000, "Kaitlin", "CEB", {from: accounts[0], gas: 6654755})
       })
     })
   }
