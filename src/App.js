@@ -90,9 +90,10 @@ class App extends Component {
         console.log(result);
       })
     }).catch(() => {
-      console.log("error");
+      console.log("OEPSIE, there is an error");
     })
   }
+
 
   render() {
     const {sendTo, amount} = this.state.myData;
