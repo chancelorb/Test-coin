@@ -10,11 +10,16 @@ import './App.css'
 class App extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       storageValue: 0,
-      web3: null
-    }
+      web3: null,
+      myData: {
+        amount: 0,
+        sendTo: ""
+      }
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -62,7 +67,35 @@ class App extends Component {
     })
   }
 
+  handleChange(e) {
+    const { name, value } = e.target;
+        this.setState((prevState) => ({
+          myData: {
+            ...prevState.myData,
+            [name]: value
+          }
+        }));
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    const contract = require('truffle-contract')
+    const coin = contract(TriveCoin)
+    coin.setProvider(this.state.web3.currentProvider)
+    this.state.web3.eth.getAccounts((error, accounts) => {
+      coin.deployed().then((instance) => {
+        const coinInstance = instance;
+        //send tokens function
+        return coinInstance.transfer(this.state.myData.sendTo, (this.state.myData.amount * 10 ** 18), {from: accounts[0], gas: 6654755})
+      }).then((result) => {
+        console.log(result);
+      })
+    }).catch(() => {
+      console.log("error");
+    })
+  }
+
   render() {
+    const {sendTo, amount} = this.state.myData;
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
@@ -76,6 +109,13 @@ class App extends Component {
               <p>Your Truffle Box is installed and ready.</p>
               <button onClick={() => {this.instantiateContract()}}>open console to check contract address from coin</button><br />
               <button onClick={() => {this.createToken()}}>Create Token</button>
+              <br />
+              <h3>send tokens:</h3>
+
+                <label>address to: <input type="text" name="sendTo" value={sendTo} onChange={this.handleChange}></input></label><br />
+                <label>amount: <input type="text" name="amount" value={amount} onChange={this.handleChange}></input></label><br />
+                <button onClick={this.handleSubmit}>submit</button>
+
             </div>
           </div>
         </main>
